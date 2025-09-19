@@ -3,14 +3,24 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAtpzL7eqTm_MUJBJmRpKUIuppDHYbwYF0",
-  authDomain: "challengex-93ce3.firebaseapp.com",
-  projectId: "challengex-93ce3",
-  storageBucket: "challengex-93ce3.firebasestorage.app",
-  messagingSenderId: "404316698053",
-  appId: "1:404316698053:web:4daa87980487234ea587ac",
-  measurementId: "G-7R0SGGCNYC"
+
+  apiKey: "AIzaSyDchVscGhuxZzPbzwmYT_aP_VPn9b7y93I",
+
+  authDomain: "challengexp2.firebaseapp.com",
+
+  projectId: "challengexp2",
+
+  storageBucket: "challengexp2.firebasestorage.app",
+
+  messagingSenderId: "973094598992",
+
+  appId: "1:973094598992:web:96b5cb59f8e18339239455",
+
+  measurementId: "G-C3YX1RVD62"
+
 };
+
+
 
 const app = initializeApp(firebaseConfig);
 

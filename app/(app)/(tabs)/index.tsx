@@ -4,18 +4,24 @@ import BotaoPrincipal from '@/components/BotaoPrincipal';
 import { useAuth } from '@/context/AuthContext';
 
 export default function HomeScreen() {
-  const { logout } = useAuth();
+  const { logout, userProfile } = useAuth();
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.titulo}>HOME</Text>
-        <BotaoPrincipal titulo="SUA CARTEIRA" rota="/carteira" />
-        <BotaoPrincipal titulo="SEU PERFIL" rota="/perfil" />
+        <View style={styles.header}>
+          <Text style={styles.welcomeTitle}>Olá, {userProfile?.nome || 'Investidor'}</Text>
+          <Text style={styles.welcomeSubtitle}>O que vamos fazer hoje?</Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <BotaoPrincipal titulo="SUA CARTEIRA" rota="/carteira" style={styles.botao} />
+          <BotaoPrincipal titulo="SEU PERFIL" rota="/perfil" style={styles.botao} />
+        </View>
       </View>
 
       <TouchableOpacity onPress={logout} style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
+        <Text style={styles.logoutButtonText}>Sair</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -28,26 +34,49 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  header: {
+    position: 'absolute',
+    top: 80,
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  welcomeTitle: {
+    color: '#c9d1d9',
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  welcomeSubtitle: {
+    color: '#8b949e',
+    fontSize: 16,
+    marginTop: 8,
+  },
+  buttonContainer: {
+    marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    gap: 20,
+    width: '100%',
   },
-  titulo: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    position: 'absolute',
-    top: 60,
+  botao: {
+    width: '80%',
     alignSelf: 'center',
   },
   logoutButton: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 40,
     alignSelf: 'center',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#21262d',
+    borderRadius: 8,
   },
   logoutButtonText: {
     color: '#f85149',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });

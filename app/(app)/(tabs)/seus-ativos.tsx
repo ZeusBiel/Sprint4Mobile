@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import AtivoCard from '../../../components/AtivoCard';
 
 const MOCK_ATIVOS = [
@@ -9,15 +9,33 @@ const MOCK_ATIVOS = [
 ];
 
 export default function SeusAtivosScreen() {
+  const totalAplicado = MOCK_ATIVOS.reduce((acc, ativo) => acc + ativo.valorAplicado, 0);
+  const rendimentoTotal = MOCK_ATIVOS.reduce((acc, ativo) => acc + ativo.rendimento, 0);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <FlatList
-        data={MOCK_ATIVOS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <AtivoCard ativo={item} />}
-        style={styles.list}
-        ListHeaderComponent={<Text style={styles.title}>Seus Ativos:</Text>}
-      />
+        <FlatList
+          data={MOCK_ATIVOS}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <AtivoCard ativo={item} />}
+          style={styles.list}
+          ListHeaderComponent={
+            <View>
+              <Text style={styles.title}>Seus Ativos</Text>
+              <View style={styles.summaryContainer}>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryLabel}>Valor Aplicado</Text>
+                  <Text style={styles.summaryValue}>R$ {totalAplicado.toFixed(2)}</Text>
+                </View>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryLabel}>Rendimento Total</Text>
+                  <Text style={[styles.summaryValue, {color: rendimentoTotal > 0 ? '#238636' : '#f85149'}]}>R$ {rendimentoTotal.toFixed(2)}</Text>
+                </View>
+              </View>
+            </View>
+          }
+          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+        />
     </SafeAreaView>
   );
 }
@@ -29,9 +47,30 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginTop: 60,
-    marginBottom: 20,
+    marginTop: 70,
+    marginBottom: 10,
+  },
+  summaryContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#161b22',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 30,
+  },
+  summaryItem: {
+    alignItems: 'center',
+  },
+  summaryLabel: {
+    color: '#8b949e',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  summaryValue: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

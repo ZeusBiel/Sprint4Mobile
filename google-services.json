@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "973094598992",
+    "project_id": "challengexp2",
+    "storage_bucket": "challengexp2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973094598992:android:e3277c31f954f690239455",
+        "android_client_info": {
+          "package_name": "com.challenge.xp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRJFvKlMJScyM4zgz3_thFVp6NxLUFDgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

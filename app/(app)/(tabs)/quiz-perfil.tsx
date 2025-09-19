@@ -75,7 +75,9 @@ export default function QuizPerfilScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.headerTitle}>Quiz de Perfil</Text>
+        <Text style={styles.headerTitle}>Quiz de Perfil de Investidor</Text>
+        <Text style={styles.subHeader}>Responda as perguntas para definirmos seu perfil.</Text>
+
         {QUIZ_DATA.map((question) => (
           <View key={question.id} style={styles.questionBlock}>
             <Text style={styles.questionTitle}>{question.title}</Text>
@@ -88,7 +90,7 @@ export default function QuizPerfilScreen() {
         {validationError && <Text style={styles.errorText}>{validationError}</Text>}
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Enviar</Text>
+          <Text style={styles.submitButtonText}>Finalizar e Ver Perfil</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -104,11 +106,23 @@ export default function QuizPerfilScreen() {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#0d1117' },
-  container: { paddingHorizontal: 24, paddingTop: 60, paddingBottom: 40 },
-  headerTitle: { color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 },
-  questionBlock: { marginBottom: 30 },
-  questionTitle: { color: '#c9d1d9', fontSize: 18, fontWeight: '600', marginBottom: 20, lineHeight: 24 },
-  submitButton: { backgroundColor: '#238636', borderRadius: 8, paddingVertical: 16, alignItems: 'center', marginTop: 20 },
+  container: { paddingHorizontal: 24, paddingTop: 70, paddingBottom: 40 },
+  headerTitle: { color: 'white', fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 8 },
+  subHeader: { color: '#8b949e', fontSize: 16, textAlign: 'center', marginBottom: 40 },
+  questionBlock: { 
+    marginBottom: 24,
+    backgroundColor: '#161b22',
+    borderRadius: 12,
+    padding: 20,
+  },
+  questionTitle: { color: '#c9d1d9', fontSize: 18, fontWeight: '600', marginBottom: 16, lineHeight: 24 },
+  submitButton: { 
+    backgroundColor: '#238636', 
+    borderRadius: 8, 
+    paddingVertical: 16, 
+    alignItems: 'center', 
+    marginTop: 20 
+  },
   submitButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
   errorText: {
     color: '#f85149',
