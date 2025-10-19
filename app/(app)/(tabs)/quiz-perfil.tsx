@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import QuizOption from '@/components/QuizOption';
 import SuccessModal from '@/components/SuccessModal';
-import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../../firebaseConfig';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { saveQuizResults } from '../../../utils/firebaseOperations';
 
 const QUIZ_DATA = [
   { id: 'q1', title: 'Questão 1: Por quanto tempo você pretende manter seus investimentos antes de precisar do dinheiro?', answers: [ { id: 'a11', text: 'Menos de 1 ano (Curto prazo).', score: 1 }, { id: 'a12', text: 'Entre 1 e 5 anos (Médio prazo).', score: 2 }, { id: 'a13', text: 'Mais de 5 anos (Longo prazo).', score: 3 }, ], },
@@ -26,7 +25,7 @@ export default function QuizPerfilScreen() {
 
   useEffect(() => {
     if (shouldNavigateBack) {
-      router.back();
+      router.push('/');
     }
   }, [shouldNavigateBack]);
 
@@ -57,13 +56,20 @@ export default function QuizPerfilScreen() {
     else if (totalScore > 12) perfil = 'Arrojado';
 
     try {
-      const userDocRef = doc(db, 'users', user.uid);
-      await setDoc(userDocRef, { perfilInvestidor: perfil }, { merge: true });
+      // Salvar resultados do quiz usando função utilitária
+      await saveQuizResults(user.uid, { perfilInvestidor: perfil, updatedAt: new Date().toISOString() });
       await refreshUserProfile();
       setCalculatedProfile(perfil);
       setModalVisible(true);
-    } catch (error) {
-      setValidationError('Não foi possível salvar seu perfil. Tente novamente.');
+    } catch (error: any) {
+      console.error('Erro ao salvar quiz:', error);
+      const code = error?.code || error?.name || null;
+      if (code === 'permission-denied') {
+        setValidationError('Permissão negada ao salvar seu perfil. Verifique as regras do Firestore ou contate o suporte.');
+      } else {
+        const message = error?.message || 'Não foi possível salvar seu perfil. Tente novamente.';
+        setValidationError(`Erro ao salvar perfil: ${message}`);
+      }
     }
   };
   

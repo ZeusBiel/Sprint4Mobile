@@ -4,13 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyDchVscGhuxZzPbzwmYT_aP_VPn9b7y93I",
+  apiKey: "AIzaSyBWIHOZUBD25QD8kdJ-QJj5l-ugBX-FxYI",
 
-  authDomain: "challengexp2.firebaseapp.com",
+  authDomain: "sprint4-mobile-67835.firebaseapp.com",
 
-  projectId: "challengexp2",
+  projectId: "sprint4-mobile-67835",
 
-  storageBucket: "challengexp2.firebasestorage.app",
+  storageBucket: "sprint4-mobile-67835.firebasestorage.app",
 
   messagingSenderId: "973094598992",
 

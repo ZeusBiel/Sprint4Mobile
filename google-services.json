@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "973094598992",
-    "project_id": "challengexp2",
-    "storage_bucket": "challengexp2.firebasestorage.app"
+    "project_number": "79454059191",
+    "project_id": "sprint4-mobile-67835",
+    "storage_bucket": "sprint4-mobile-67835.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:973094598992:android:e3277c31f954f690239455",
+        "mobilesdk_app_id": "1:79454059191:android:8f3a8a1cd493fb23246b32",
         "android_client_info": {
-          "package_name": "com.challenge.xp"
+          "package_name": "com.sprint4.mobile"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCRJFvKlMJScyM4zgz3_thFVp6NxLUFDgg"
+          "current_key": "AIzaSyBWIHOZUBD25QD8kdJ-QJj5l-ugBX-FxYI"
         }
       ],
       "services": {

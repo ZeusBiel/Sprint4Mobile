@@ -1,30 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { useGoogleAuth } from '../hooks/useGoogleAuth';
+import { StyleSheet } from 'react-native';
 
-const BotaoSocial: React.FC = () => {
-  const { isLoading, promptAsync } = useGoogleAuth();
-
-  return (
-    <TouchableOpacity
-      style={styles.botao}
-      disabled={isLoading}
-      onPress={() => promptAsync()}
-    >
-      {isLoading ? (
-        <ActivityIndicator color="#24292e" />
-      ) : (
-        <>
-          <Image
-            source={require('../assets/images/google-logo.png')}
-            style={styles.icon}
-          />
-          <Text style={styles.texto}>Continue with Google</Text>
-        </>
-      )}
-    </TouchableOpacity>
-  );
-};
+// Componente removido pois não há mais login social
+const BotaoSocial: React.FC = () => null;
 
 const styles = StyleSheet.create({
   botao: {

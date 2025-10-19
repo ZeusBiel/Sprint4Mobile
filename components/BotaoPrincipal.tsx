@@ -1,18 +1,19 @@
+import { Href, useRouter } from 'expo-router';
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface BotaoPrincipalProps {
   titulo: string;
   rota: Href;
+  style?: ViewStyle | any;
 }
 
-const BotaoPrincipal: React.FC<BotaoPrincipalProps> = ({ titulo, rota }) => {
+const BotaoPrincipal: React.FC<BotaoPrincipalProps> = ({ titulo, rota, style }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
-      style={styles.botao}
+      style={[styles.botao, style]}
       onPress={() => router.push(rota)}
     >
       <Text style={styles.textoBotao}>{titulo}</Text>

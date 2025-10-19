@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import InputAuth from '@/components/InputAuth';
-import BotaoPrincipalAuth from '@/components/BotaoPrincipalAuth';
-import BotaoSocial from '@/components/BotaoSocial';
 import AuthLink from '@/components/AuthLink';
+import BotaoPrincipalAuth from '@/components/BotaoPrincipalAuth';
+import InputAuth from '@/components/InputAuth';
 import Separator from '@/components/Separator';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
 import { useAuth } from '@/context/AuthContext';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { auth } from '../../firebaseConfig';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -37,7 +36,7 @@ export default function LoginScreen() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, senha);
       login(userCredential.user);
-      router.replace('/');
+          router.push('/');
     } catch (error: any) {
       setError('E-mail ou senha inválidos.');
     } finally {
@@ -60,7 +59,6 @@ export default function LoginScreen() {
 
           <BotaoPrincipalAuth onPress={handleLogin} isLoading={isLoading} />
           <Separator />
-          <BotaoSocial />
           <AuthLink onPress={() => router.push('/cadastro')} textoNormal="Ainda não tem conta? Faça o seu" textoLink=" Cadastro." />
         </View>
       </View>

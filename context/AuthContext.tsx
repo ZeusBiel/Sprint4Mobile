@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { onAuthStateChanged, User, signOut } from 'firebase/auth';
-import { auth, db } from '../firebaseConfig';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { auth } from '../firebaseConfig';
+import { ensureUserDocExists } from '../utils/firebaseOperations';
 
 interface UserProfile {
   nome: string;
@@ -28,19 +28,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUserProfile = useCallback(async (firebaseUser: User) => {
     if (!firebaseUser) return;
-    const userDocRef = doc(db, 'users', firebaseUser.uid);
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
-      setUserProfile(userDoc.data() as UserProfile);
-    } else {
-      const defaultProfile: UserProfile = {
+    try {
+      console.log('Fetching profile for user:', firebaseUser.uid);
+      const profile = await ensureUserDocExists(firebaseUser.uid, {
         nome: firebaseUser.displayName || 'Usuário',
-        capitalTotal: 47000.00,
-        perfilInvestidor: 'Não definido',
-      };
-      await setDoc(userDocRef, defaultProfile);
-      setUserProfile(defaultProfile);
+        capitalTotal: 47000.0,
+      });
+      setUserProfile(profile as UserProfile);
+      console.log('Profile loaded:', profile);
+    } catch (error) {
+      console.error('Error fetching/creating user profile:', error);
     }
   }, []);
 
