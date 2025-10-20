@@ -11,10 +11,6 @@ permissions:
   contents: read
   security-events: write
 
-env:
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  DAST_TARGET_URL: ${{ secrets.DAST_TARGET_URL }}
-
 jobs:
   install:
     name: Install deps
@@ -77,21 +73,21 @@ jobs:
       - run: npm ci
 
       - name: Snyk monitor
-        if: ${{ env.SNYK_TOKEN != '' }}
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@v0.4.0
         env:
-          SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
 
       - name: Snyk test (break on high)
-        if: ${{ env.SNYK_TOKEN != '' }}
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         env:
-          SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: npx snyk test --severity-threshold=high
 
       - name: npm audit (fallback)
-        if: ${{ env.SNYK_TOKEN == '' }}
+        if: ${{ secrets.SNYK_TOKEN == '' }}
         run: npm audit --audit-level=high
 
   dast_zap:
@@ -101,8 +97,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: ZAP Baseline Scan
-        if: ${{ env.DAST_TARGET_URL != '' }}
+        if: ${{ secrets.DAST_TARGET_URL != '' }}
         uses: zaproxy/action-baseline@v0.13.0
         with:
-          target: ${{ env.DAST_TARGET_URL }}
+          target: ${{ secrets.DAST_TARGET_URL }}
           cmd_options: "-a -m 3"
