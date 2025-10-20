@@ -2,9 +2,9 @@ name: Security CI (Lint + Test + SAST + SCA + DAST)
 
 on:
   push:
-    branches: ["main", "develop", "feature/**"]
+    branches: [main, develop, "feature/**"]
   pull_request:
-    branches: ["main", "develop"]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
@@ -72,33 +72,59 @@ jobs:
           cache: "npm"
       - run: npm ci
 
-      - name: Snyk monitor
-        if: ${{ secrets.SNYK_TOKEN != '' }}
-        uses: snyk/actions/node@v0.4.0
+      - name: Snyk monitor (conditional)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
+        run: |
+          if [ -n "$SNYK_TOKEN" ]; then
+            echo "SNYK_TOKEN set -> running snyk monitor"
+            npx snyk monitor
+          else
+            echo "SNYK_TOKEN not set -> skipping snyk monitor"
+          fi
 
-      - name: Snyk test (break on high)
-        if: ${{ secrets.SNYK_TOKEN != '' }}
+      - name: Snyk test (conditional, break on high)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: npx snyk test --severity-threshold=high
+        run: |
+          if [ -n "$SNYK_TOKEN" ]; then
+            echo "SNYK_TOKEN set -> running snyk test"
+            npx snyk test --severity-threshold=high
+          else
+            echo "SNYK_TOKEN not set -> skipping snyk test"
+          fi
 
-      - name: npm audit (fallback)
-        if: ${{ secrets.SNYK_TOKEN == '' }}
-        run: npm audit --audit-level=high
+      - name: npm audit (fallback when Snyk missing)
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "Running npm audit fallback"
+            npm audit --audit-level=high
+          else
+            echo "SNYK_TOKEN set -> skipping npm audit fallback"
+          fi
 
   dast_zap:
-    name: DAST (OWASP ZAP) — opcional
+    name: DAST (OWASP ZAP)
     runs-on: ubuntu-latest
     needs: install
     steps:
       - uses: actions/checkout@v4
-      - name: ZAP Baseline Scan
-        if: ${{ secrets.DAST_TARGET_URL != '' }}
+      - name: ZAP Baseline Scan (conditional)
+        env:
+          DAST_TARGET_URL: ${{ secrets.DAST_TARGET_URL }}
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: ${{ secrets.DAST_TARGET_URL }}
           cmd_options: "-a -m 3"
+   
+      - name: ZAP wrapper (skip when no URL)
+        env:
+          DAST_TARGET_URL: ${{ secrets.DAST_TARGET_URL }}
+        run: |
+          if [ -z "$DAST_TARGET_URL" ]; then
+            echo "DAST_TARGET_URL not set -> skipping ZAP (already skipped)"
+          else
+            echo "DAST_TARGET_URL set -> ZAP executed above"
+          fi
