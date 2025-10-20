@@ -1,6 +1,10 @@
 # Challenge XP - Investment Portfolio App
 
+<<<<<<< HEAD
 ## Integrantes
+=======
+# Integrantes
+>>>>>>> 7d87b6455b0a684efaacc0428bbac9ae1cf13b0f
 
 - Gabriel Oliveira Rodrigues RM98565 / ZeusBiel
 - Gabriel Riqueto RM98685 / gabriel-riqueto
