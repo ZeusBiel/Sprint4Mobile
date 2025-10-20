@@ -2,10 +2,17 @@ name: Security CI (Lint + Test + SAST + SCA + DAST)
 
 on:
   push:
-    branches: [main, develop, "feature/**"]
+    branches:
+      - main
+      - develop
+      - "feat/**"
+      - "feature/**"
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
   workflow_dispatch:
+
 
 permissions:
   contents: read
