@@ -11,6 +11,10 @@ permissions:
   contents: read
   security-events: write
 
+env:
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  DAST_TARGET_URL: ${{ secrets.DAST_TARGET_URL }}
+
 jobs:
   install:
     name: Install deps
@@ -64,7 +68,8 @@ jobs:
     name: SCA (Snyk) — opcional
     runs-on: ubuntu-latest
     needs: install
-    if: ${{ secrets.SNYK_TOKEN != '' }}
+
+    if: ${{ env.SNYK_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,19 +80,19 @@ jobs:
       - name: Snyk monitor
         uses: snyk/actions/node@v0.4.0
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
         with:
           command: monitor
       - name: Snyk test (break on high)
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
         run: npx snyk test --severity-threshold=high
 
   sca_npm_audit:
     name: SCA fallback (npm audit)
     runs-on: ubuntu-latest
     needs: install
-    if: ${{ secrets.SNYK_TOKEN == '' }}
+    if: ${{ env.SNYK_TOKEN == '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -101,11 +106,11 @@ jobs:
     name: DAST (OWASP ZAP) — opcional
     runs-on: ubuntu-latest
     needs: install
-    if: ${{ secrets.DAST_TARGET_URL != '' }}
+    if: ${{ env.DAST_TARGET_URL != '' }}
     steps:
       - uses: actions/checkout@v4
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.13.0
         with:
-          target: ${{ secrets.DAST_TARGET_URL }}
+          target: ${{ env.DAST_TARGET_URL }}
           cmd_options: "-a -m 3"
