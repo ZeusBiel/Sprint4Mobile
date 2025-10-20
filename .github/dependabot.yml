@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Dependências NPM do projeto React Native/Expo
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"         
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    versioning-strategy: increase
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    reviewers: []              
+    labels:
+      - "dependencies"
+      - "security"
+
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels: ["dependencies", "android"]

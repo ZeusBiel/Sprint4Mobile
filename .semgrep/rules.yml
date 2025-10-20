@@ -1,0 +1,117 @@
+
+rules:
+  # Segredos & chaves duras 
+  - id: generic-hardcoded-secret
+    message: "Possível segredo/chave hardcoded no repositório."
+    severity: ERROR
+    languages: [generic]
+    patterns:
+      - pattern-regex: '(?i)(api[_-]?key|secret|token|access[_-]?key|password)\s*[:=]\s*["\'][A-Za-z0-9/_\-+=]{16,}["\']'
+    metadata:
+      cwe: "CWE-798"
+      owasp: "A02:2021 Cryptographic Failures"
+
+  - id: firebase-config-exposure
+    message: "Config do Firebase detectada. apiKey não é 'segredo', mas evite expor demais (restringir regras e domínios)."
+    severity: WARNING
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-regex: 'apiKey:\s*"[A-Za-z0-9_\-]{10,}"'
+    metadata:
+      refs: ["https://firebase.google.com/docs/projects/api-keys"]
+      note: "Marcado como WARNING para revisão manual."
+
+  # Criptografia / geração insegura 
+  - id: insecure-random-for-security
+    message: "Evite Math.random() para tokens/IDs sensíveis; use libs cripto."
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern: Math.random()
+    metadata:
+      cwe: "CWE-338"
+      owasp: "A02:2021"
+
+  - id: use-of-eval
+    message: "Não use eval(); riscos de execução arbitrária."
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern: eval($X)
+    metadata:
+      cwe: "CWE-95"
+      owasp: "A03:2021 Injection"
+
+  # Armazenamento de sessão/token 
+  - id: token-in-asyncstorage
+    message: "Tokens/sessões não devem ser gravados em AsyncStorage/localStorage. Use expo-secure-store."
+    severity: WARNING
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: AsyncStorage.setItem($K, $V)
+          - pattern: localStorage.setItem($K, $V)
+    metadata:
+      cwe: "CWE-922"
+
+  # Network / transporte 
+  - id: fetch-without-https
+    message: "Requisição HTTP sem TLS detectada. Prefira HTTPS."
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern: fetch($URL, ...)
+      - metavariable-pattern:
+          metavariable: $URL
+          pattern-regex: '^["\']http://'
+    metadata:
+      cwe: "CWE-319"
+
+  # Logs sensíveis 
+  - id: console-log-in-production
+    message: "Remova console.log/console.error sensíveis antes de produção."
+    severity: WARNING
+    languages: [typescript, javascript]
+    pattern-either:
+      - pattern: console.log(...)
+      - pattern: console.error(...)
+      - pattern: console.debug(...)
+    # Permitir em arquivos de teste:
+    paths:
+      exclude:
+        - "**/__tests__/**"
+        - "**/*.test.*"
+
+  # Redirecionamentos perigosos (apps web/híbridos) 
+  - id: open-redirect-location-replace
+    message: "Possível open redirect. Valide destino antes de redirecionar."
+    severity: WARNING
+    languages: [typescript, javascript]
+    patterns:
+      - pattern: location.replace($DEST)
+    metadata:
+      cwe: "CWE-601"
+
+  # Tratamento de erros mínimo em fetch 
+  - id: fetch-without-catch
+    message: "Chamada a fetch sem tratamento de erro (.catch / try-catch)."
+    severity: WARNING
+    languages: [typescript, javascript]
+    patterns:
+      - pattern: |
+          fetch($URL).then($THEN)
+    # Ignora quando já há chain com catch:
+    pattern-not: |
+      fetch($URL).then($THEN).catch($CATCH)
+    metadata:
+      note: "Para RN, preferir try/catch com async/await."
+
+  # Proibição de credenciais em commit (marcador simples) 
+  - id: do-not-commit-env
+    message: "Evite commitar arquivos .env com segredos."
+    severity: ERROR
+    languages: [generic]
+    patterns:
+      - pattern-regex: '\.env(\..+)?$'
+    paths:
+      include:
+        - "**/.env"
+        - "**/.env.*"
